@@ -8,7 +8,7 @@ public class Card {
         this.suit = suit;
         this.rank = rank;
     }
-
+    //getters
     public int getPoint() {
         return point;
     }
@@ -21,7 +21,7 @@ public class Card {
         return rank;
     }
 
-
+    //setters
     public void setPoint(int point) {
         this.point = point;
     }
