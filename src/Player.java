@@ -28,6 +28,9 @@ public class Player {
     public String getName() {
         return name;
     }
+    public void setPoints(int points) {
+        this.points = points;
+    }
 
     public void addPoints(int increment) {
         this.points += increment;
