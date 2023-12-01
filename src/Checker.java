@@ -6,6 +6,8 @@ public class Checker {
     Card[] p1;
     int p1score;
     Card[] p2;
+    private Player p1ref;
+    private Player p2ref;
     int p2score;
 
     public Checker(Card[] middle, Player p1, Player p2)
@@ -14,7 +16,8 @@ public class Checker {
         p2score = 0;
         this.p1 = new Card[5];
         this.p2 = new Card[5];
-
+        p1ref = p1;
+        p2ref = p2;
         for (int i = 0; i < 3; i++) {
 
             this.p1[i] = p1.getHand().get(i);
@@ -31,7 +34,17 @@ public class Checker {
     {
         p1score = assign(p1);
         p2score = assign(p2);
-        if ()
+        p1ref.setHandName(this.getHandName(p1score));
+        p2ref.setHandName(this.getHandName(p2score));
+        if (p1score > p2score)
+        {
+            return p1ref;
+        }
+        return p2ref;
+    }
+    public String getHandName(int score)
+    {
+        return combos[score / 1000] + "with a high card " + Game.checkRoyal(score % 100);
     }
     public int assign(Card[] hand)
     {

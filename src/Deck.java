@@ -6,9 +6,11 @@ public class Deck {
 
     public Deck(int[] point, String[] suit, String[] rank) {
         deck = new ArrayList<Card>();
-        for (int i = 0; i < point.length; i++)
+        for (int i = 0; i < 13; i++)
         {
-           deck.add(new Card(point[i], suit[i], rank[i]));
+            for (int j = 0; j < 4; j++) {
+                deck.add(new Card(point[i], suit[j], rank[i]));
+            }
         }
         cardsLeft = deck.size();
     }

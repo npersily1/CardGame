@@ -20,7 +20,7 @@ public class Game {
         this.dealer = dealer;
         dealer.setPoints(100);
         this.createDeck();
-        deck.shuffle();
+        //deck.shuffle();
         middle = new Card[3];
 
     }
@@ -28,7 +28,8 @@ public class Game {
     public void play()
     {
         //intro / instructions
-
+        System.out.println("Weklcome to Holdem");
+        clearScreen();
         //game loop
         boolean didFold = false;
         int counter = 0;
@@ -39,24 +40,40 @@ public class Game {
             for(int i = 0 ; i < 4; i++) {
                 didFold = willFold();
                 if (didFold) {
-                    continue;
+                    break;
                 }
                 player.setPoints(player.getPoints() - 5);
                 this.printHiddenBoard(counter++);
             }
             if(!didFold && win())
             {
-
+                player.setPoints(5 * counter);
             }
             this.printFinalBoard();
+            clearScreen();
+            if(Game.willContinue())
+            {
+                break;
+            }
+            reset();
 
         }
 
     }
+    public static boolean willContinue()
+    {
+        System.out.println("Do you want to continue playing (press 1 to do so)");
+        String willContinue = s.nextLine();
+        if (willContinue.equals("1"))
+        {
+            return true;
+        }
+        return false;
+    }
     public boolean win()
     {
         Checker c = new Checker(middle, player ,dealer);
-        return c.won();
+        return c.won() == player;
     }
     //returns true if they want to fold false otherwise
     public boolean willFold()
@@ -72,9 +89,9 @@ public class Game {
     }
     public void printFinalBoard()
     {
-        System.out.println( player );
+        System.out.println( player + player.getHandName());
         this.printMiddle(3);
-        System.out.println(dealer);
+        System.out.println(dealer + dealer.getHandName());
 
 
     }
@@ -115,8 +132,8 @@ public class Game {
     public void deal()
     {
         for (int i = 0; i < 2; i++) {
-            player.addCard(deck.deal());
-            dealer.addCard(deck.deal());
+            player.getHand()[i] = deck.deal();
+
             middle[i] = deck.deal();
         }
         middle[2] = deck.deal();
@@ -129,10 +146,10 @@ public class Game {
         String[] ranks = new String[13];
         int[] points = new int[13];
         String[] suits = {"Hearts", "Diamonds","Clubs","Spades"};
-        for (int i = 2; i < 15; i++) {
-            String rank = checkRoyal(i);
+        for (int i = 0; i < 13; i++) {
+            String rank = checkRoyal(i + 2);
             ranks[i] = rank;
-            points[i] = i;
+            points[i] = i + 2;
         }
         deck = new Deck(points, suits, ranks);
     }
@@ -151,9 +168,20 @@ public class Game {
             return "Ace";
 
     }
+    // source https://replit.com/talk/ask/How-do-you-clear-terminal-in-Java/46341
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+    public void reset()
+    {
+        for (int i = 0; i < 2; i++) {
+            player.getHand()
+        }
+    }
 
     public static void main(String[] args) {
-
+        System.out.println("What is your name");
         Player player = new Player(s.nextLine());
         Player dealer = new Player("dealer");
         Game game = new Game(player, dealer);
@@ -163,4 +191,5 @@ public class Game {
 
 
     }
+
 }

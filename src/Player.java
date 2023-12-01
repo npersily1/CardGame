@@ -1,23 +1,36 @@
 import java.util.ArrayList;
 
 public class Player {
-    private ArrayList<Card> hand;
+    private Card[] hand;
     private int points;
     private String name;
+
+    private String handName;
 
     public Player(String name) {
         this.name = name;
         this.points = 0;
+        handName = "";
+        hand = new Card[2];
     }
-    public Player(String name, ArrayList<Card> oldHand ) {
-        this.name = name;
-        this.points = 0;
-        for (Card c : oldHand) {
-            hand.add(c);
-        }
+//    public Player(String name, ArrayList<Card> oldHand ) {
+//        this.name = name;
+//        this.points = 0;
+//        for (Card c : oldHand) {
+//            hand.add(c);
+//        }
+//        handName = "";
+//    }
+
+    public String getHandName() {
+        return handName;
     }
 
-    public ArrayList<Card> getHand() {
+    public void setHandName(String handName) {
+        this.handName = handName;
+    }
+
+    public Card[] getHand() {
         return hand;
     }
 
@@ -35,9 +48,9 @@ public class Player {
     public void addPoints(int increment) {
         this.points += increment;
     }
-    public void addCard(Card newCard) {
-        hand.add(newCard);
-    }
+    //public void addCard(Card newCard) {
+    //    hand.add(newCard);
+   // }
 
 
     public String toString() {
