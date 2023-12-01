@@ -7,21 +7,21 @@ public class Game {
 
     private Deck deck;
     private Player player;
-    private Player cpu;
-    private ArrayList<Card> middle;
+    private Player dealer;
+    private Card[] middle;
     private static Scanner s = new Scanner(System.in);
 
 
 
-    public Game(Player player, Player cpu) {
+    public Game(Player player, Player dealer) {
 
         this.player = player;
         player.setPoints(100);
-        this.cpu = cpu;
-        cpu.setPoints(100);
+        this.dealer = dealer;
+        dealer.setPoints(100);
         this.createDeck();
         deck.shuffle();
-        middle = new ArrayList<Card>();
+        middle = new Card[3];
 
     }
 
@@ -30,25 +30,33 @@ public class Game {
         //intro / instructions
 
         //game loop
+        boolean didFold = false;
         int counter = 0;
-        while (player.getPoints() < 0 || cpu.getPoints() < 0) {
+        while (player.getPoints() < 0 || dealer.getPoints() < 0) {
             //deal player cards
             player.setPoints(player.getPoints() - 5);
             this.deal();
-            if(willFold())
-            {
-                break;
+            for(int i = 0 ; i < 4; i++) {
+                didFold = willFold();
+                if (didFold) {
+                    continue;
+                }
+                player.setPoints(player.getPoints() - 5);
+                this.printHiddenBoard(counter++);
             }
-            //fold or continue
-            //deal flop
-            //fold or continue
-            // deal turn
-            // fold or continue
-            //deal river
-            //fold or continue;
-            // reveal
+            if(!didFold && win())
+            {
+
+            }
+            this.printFinalBoard();
+
         }
 
+    }
+    public boolean win()
+    {
+        Checker c = new Checker(middle, player ,dealer);
+        return c.won();
     }
     //returns true if they want to fold false otherwise
     public boolean willFold()
@@ -62,12 +70,20 @@ public class Game {
         return false;
 
     }
-    //prints board
-    public void printBoard(int counter)
+    public void printFinalBoard()
+    {
+        System.out.println( player );
+        this.printMiddle(3);
+        System.out.println(dealer);
+
+
+    }
+    //prints current board
+    public void printHiddenBoard(int counter)
     {
         System.out.println( player );
         this.printMiddle(counter);
-        System.out.println("CPU ___ ___" + "Dealer has " + cpu.getPoints() + " points");
+        System.out.println("dealer ___ ___" + "Dealer has " + dealer.getPoints() + " points");
 
 
     }
@@ -77,21 +93,21 @@ public class Game {
         if (counter == 0) {
             System.out.println("___ ___ ___ ___ ___ ___");
         } else if (counter == 1) {
-            for (int i = 0; i < 3; i++) {
-                System.out.print(middle.get(i));
+            for (int i = 0; i < 1; i++) {
+                System.out.print(middle[i]);
             }
             System.out.println(" ___ ___");
         }
         else if (counter == 2) {
-            for (int i = 0; i < 4; i++) {
-                System.out.print(middle.get(i));
+            for (int i = 0; i < 2; i++) {
+                System.out.print(middle[i]);
             }
 
             System.out.println(" ___");
         }
         else  {
-            for (int i = 0; i < 5; i++) {
-                System.out.print(middle.get(i));
+            for (int i = 0; i < 3; i++) {
+                System.out.print(middle[i]);
             }
             System.out.println();
         }
@@ -100,8 +116,10 @@ public class Game {
     {
         for (int i = 0; i < 2; i++) {
             player.addCard(deck.deal());
-            cpu.addCard(deck.deal());
+            dealer.addCard(deck.deal());
+            middle[i] = deck.deal();
         }
+        middle[2] = deck.deal();
 
     }
 
@@ -137,8 +155,8 @@ public class Game {
     public static void main(String[] args) {
 
         Player player = new Player(s.nextLine());
-        Player cpu = new Player("CPU");
-        Game game = new Game(player, cpu);
+        Player dealer = new Player("dealer");
+        Game game = new Game(player, dealer);
         game.play();
 
 
