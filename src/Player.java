@@ -54,11 +54,11 @@ public class Player {
 
 
     public String toString() {
-        String info = name + " has " + points + " points" +
+        String info = name + " has " + points + " points \n" +
                 name + "'s cards: ";
 
         for (Card c: hand) {
-            info += c.toString() + " ";
+            info += "  " + c.toString() + "    ";
         }
         return info;
     }

@@ -20,7 +20,7 @@ public class Game {
         this.dealer = dealer;
         dealer.setPoints(100);
         this.createDeck();
-        //deck.shuffle();
+       // deck.shuffle();
         middle = new Card[3];
 
     }
@@ -28,13 +28,14 @@ public class Game {
     public void play()
     {
         //intro / instructions
-        System.out.println("Weklcome to Holdem");
+        System.out.println("Welcome to Holdem");
         clearScreen();
         //game loop
         boolean didFold = false;
-        int counter = 0;
-        while (player.getPoints() < 0 || dealer.getPoints() < 0) {
+
+        while (player.getPoints() > 0 || dealer.getPoints() > 0) {
             //deal player cards
+            int counter = 0;
             player.setPoints(player.getPoints() - 5);
             this.deal();
             for(int i = 0 ; i < 4; i++) {
@@ -43,13 +44,14 @@ public class Game {
                     break;
                 }
                 player.setPoints(player.getPoints() - 5);
-                this.printHiddenBoard(counter++);
+
+                this.printHiddenBoard(++counter);
             }
             if(!didFold && win())
             {
                 player.setPoints(5 * counter);
             }
-            this.printFinalBoard();
+            printFinalBoard();
             clearScreen();
             if(Game.willContinue())
             {
@@ -98,7 +100,8 @@ public class Game {
     //prints current board
     public void printHiddenBoard(int counter)
     {
-        System.out.println( player );
+
+        System.out.println(player);
         this.printMiddle(counter);
         System.out.println("dealer ___ ___" + "Dealer has " + dealer.getPoints() + " points");
 
@@ -107,24 +110,25 @@ public class Game {
     //prints some of middle five cards
     public void printMiddle(int counter)
     {
+        System.out.println("Center Cards");
         if (counter == 0) {
-            System.out.println("___ ___ ___ ___ ___ ___");
+            System.out.println("___    ___    ___");
         } else if (counter == 1) {
             for (int i = 0; i < 1; i++) {
-                System.out.print(middle[i]);
+                System.out.print(middle[i] + "  ");
             }
-            System.out.println(" ___ ___");
+            System.out.println("    ___     ___");
         }
         else if (counter == 2) {
             for (int i = 0; i < 2; i++) {
-                System.out.print(middle[i]);
+                System.out.print(middle[i] + "   ");
             }
 
-            System.out.println(" ___");
+            System.out.println("___");
         }
         else  {
             for (int i = 0; i < 3; i++) {
-                System.out.print(middle[i]);
+                System.out.print(middle[i] + "    ");
             }
             System.out.println();
         }
@@ -133,6 +137,7 @@ public class Game {
     {
         for (int i = 0; i < 2; i++) {
             player.getHand()[i] = deck.deal();
+            dealer.getHand()[i] = deck.deal();
 
             middle[i] = deck.deal();
         }
@@ -176,8 +181,13 @@ public class Game {
     public void reset()
     {
         for (int i = 0; i < 2; i++) {
-            player.getHand()
+            deck.add(player.getHand()[i]);
+            deck.add(dealer.getHand()[i]);
         }
+        for (int i = 0; i < 3; i++) {
+            deck.add(middle[i]);
+        }
+        deck.shuffle();
     }
 
     public static void main(String[] args) {

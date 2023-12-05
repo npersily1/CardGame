@@ -35,6 +35,11 @@ public class Deck {
         return deck.get(--cardsLeft);
 
     }
+    public void add(Card c)
+    {
+        cardsLeft++;
+        deck.add(c);
+    }
     public void shuffle()
     {
         for (int i = cardsLeft -1; i >= 0 ; i--) {

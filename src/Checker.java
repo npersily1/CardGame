@@ -1,12 +1,11 @@
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Checker {
-    public final static String[] combos = {"High Card", "Pair", "Three", "Four", "Full House", "Flush", "Straight", "Straight Flush"};
+    public final static String[] combos = {"High Card", "Pair", "Three of a Kind", "Full House", "Four of a Kind", "Flush", "Straight", "Straight Flush"};
     Card[] p1;
     int p1score;
     Card[] p2;
-    private Player p1ref;
+    private  Player p1ref;
     private Player p2ref;
     int p2score;
 
@@ -18,22 +17,23 @@ public class Checker {
         this.p2 = new Card[5];
         p1ref = p1;
         p2ref = p2;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 2; i++) {
 
-            this.p1[i] = p1.getHand().get(i);
-            this.p2[i] = p2.getHand().get(i);
+            this.p1[i] = p1.getHand()[i];
+            this.p2[i] = p2.getHand()[i];
 
         }
 
-        for (int i = 3; i < 5; i++) {
-            this.p1[i] = middle[i];
-            this.p2[i] = middle[i];
+        for (int i = 2; i < 5; i++) {
+            this.p1[i] = middle[i -2];
+            this.p2[i] = middle[i -2];
         }
     }
     public Player won()
     {
         p1score = assign(p1);
         p2score = assign(p2);
+        int i = 0;
         p1ref.setHandName(this.getHandName(p1score));
         p2ref.setHandName(this.getHandName(p2score));
         if (p1score > p2score)
@@ -44,39 +44,41 @@ public class Checker {
     }
     public String getHandName(int score)
     {
-        return combos[score / 1000] + "with a high card " + Game.checkRoyal(score % 100);
+        if(combos[score / 100].equals("High Card"))
+        {
+            return Game.checkRoyal(score % 100);
+        }
+
+        return  combos[score / 100]+ " with a high card " + Game.checkRoyal(score % 100);
     }
     public int assign(Card[] hand)
     {
         int temp = getStraightFlush(hand);
-        if(temp % 10 != 0)
+        if(temp / 100 != 0)
         {
-            return temp % 10 * 1000 + temp / 10;
+            return temp;
         }
         temp = straight(hand);
-        if(temp % 10 != 0)
+        if(temp / 100 != 0)
         {
-            return  temp % 10 * 1000 + temp / 10;
+            return temp;
         }
         temp = flush(hand);
-        if(temp % 10 != 0)
+        if(temp / 100 != 0)
         {
-            return  temp % 10 * 1000 + temp / 10;
+            return temp;
         }
         temp = getFullHouse(hand);
-        if(temp % 10 != 0)
-        {
-            return  temp % 10 * 1000 + temp / 10;
+        if(temp / 100 != 0)        {
+            return temp;
         }
         temp = numPair(hand);
-        if(temp % 10 != 0)
-        {
-            return  temp % 10 * 1000 + temp / 10;
+        if(temp / 100 != 0)        {
+            return temp;
         }
         temp = getPair(hand);
-        if(temp % 10 != 0)
-        {
-            return  temp % 10 * 1000 + temp / 10;
+        if(temp / 100 != 0)        {
+            return temp;
         }
         else
         {
@@ -85,14 +87,14 @@ public class Checker {
     }
     public  int flush(Card[] hand)
     {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
 
-            if(!(hand[i].getSuit().equals(hand[i].getSuit())))
+            if(!(hand[i].getSuit().equals(hand[i + 1].getSuit())))
             {
                 return 0;
             }
         }
-        return getHighCard(hand) + 5;
+        return 500 + getHighCard(hand) ;
     }
     public int getHighCard(Card[] hand)
     {
@@ -103,7 +105,7 @@ public class Checker {
                 max = hand[i].getPoint();
             }
         }
-        return max * 10;
+        return max;
     }
     public int straight(Card[] hand)
     {
@@ -118,7 +120,7 @@ public class Checker {
                 return 0;
             }
         }
-        return getHighCard(hand) + 6;
+        return 600 + getHighCard(hand);
     }
     public int numPair(Card[] hand){
         for (int i = 0; i < 3; i++) {
@@ -131,11 +133,11 @@ public class Checker {
             }
             if(counter == 4)
             {
-                return hand[i].getPoint() * 10 + 3;
+                return 500 + hand[i].getPoint();
             }
             if(counter == 3)
             {
-                return hand[i].getPoint() * 10 + 2;
+                return 200 + hand[i].getPoint();
             }
 
         }
@@ -159,7 +161,10 @@ public class Checker {
                 }
             }
         }
-        return Math.max(pair1, pair2) * 10 + 1;
+        if (pair1 == 0) {
+            return 100 + Math.max(pair1, pair2) ;
+        }
+        return 0;
     }
     public int getFullHouse(Card[] hand)
     {
@@ -170,8 +175,7 @@ public class Checker {
             {
                 if((two / 10) != (three / 10))
                 {
-                    //not redundant because of truncation
-                    return three / 10 * 10 + 4;
+                    return 400 + three % 100;
                 }
             }
         return 0;
@@ -184,7 +188,7 @@ public class Checker {
             if (straight % 10 == 6)
             {
                 //not redundant because of truncation
-                return straight / 10 * 10 + 7;
+                return 700 + straight % 100;
             }
         return 0;
     }
