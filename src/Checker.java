@@ -68,6 +68,8 @@ public class Checker {
         {
             return temp;
         }
+
+
         temp = getFullHouse(hand);
         if(temp / 100 != 0)        {
             return temp;
@@ -148,7 +150,7 @@ public class Checker {
         int pair1 = 0;
         int pair2 = 0;
         for (int i = 0; i < 5; i++) {
-            for (int j = i; j < 5; j++) {
+            for (int j = i + 1; j < 5; j++) {
                 if(pair1 == 0 && hand[i].getPoint() == hand[j].getPoint())
                 {
                     pair1 = hand[j].getPoint();
@@ -161,22 +163,43 @@ public class Checker {
                 }
             }
         }
-        if (pair1 == 0) {
+        if (pair1 != 0) {
+            return 100 + Math.max(pair1, pair2) ;
+        }
+        return 0;
+    }
+    public int getFullPair(Card[] hand, int other)
+    {
+        int pair1 = 0;
+        int pair2 = 0;
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 5; j++) {
+                if(pair1 == 0 && hand[i].getPoint() == hand[j].getPoint() && hand[j].getPoint() != other)
+                {
+                    pair1 = hand[j].getPoint();
+                    break;
+                }
+                if (hand[i].getPoint() == hand[j].getPoint() && hand[j].getPoint() != other)
+                {
+                    pair2 = hand[j].getPoint();
+                    break;
+                }
+            }
+        }
+        if (pair1 != 0) {
             return 100 + Math.max(pair1, pair2) ;
         }
         return 0;
     }
     public int getFullHouse(Card[] hand)
     {
-        int two = getPair(hand);
         int three = numPair(hand);
-        if (two % 10 == 1)
-            if (three % 10 == 3)
+        int two = getFullPair(hand, three % 100);
+
+        if (two / 100 == 1)
+            if (three / 100 == 2)
             {
-                if((two / 10) != (three / 10))
-                {
-                    return 400 + three % 100;
-                }
+                return 300 + three % 100;
             }
         return 0;
     }
@@ -184,8 +207,8 @@ public class Checker {
     {
         int flush = flush(hand);
         int straight = straight(hand);
-        if (flush % 10 == 5)
-            if (straight % 10 == 6)
+        if (flush / 100 == 5)
+            if (straight / 100 == 6)
             {
                 //not redundant because of truncation
                 return 700 + straight % 100;
