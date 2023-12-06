@@ -1,7 +1,15 @@
 import java.util.Arrays;
 
 public class Checker {
-    public final static String[] combos = {"High Card", "Pair", "Three of a Kind", "Full House", "Four of a Kind", "Flush", "Straight", "Straight Flush"};
+    public final static String[] COMBOS = {"High Card", "Pair", "Three of a Kind", "Full House", "Four of a Kind", "Flush", "Straight", "Straight Flush"};
+    public static final int PAIR = 100;
+    public static final int THREE = 200;
+    public static final int FULLHOUSE = 300;
+    public static final int FOUR = 400;
+    public static final int FLUSH = 500;
+    public static final int STRAIGHT = 600;
+    public static final int STRAIGHTFLUSH = 700;
+
     Card[] p1;
     int p1score;
     Card[] p2;
@@ -33,23 +41,48 @@ public class Checker {
     {
         p1score = assign(p1);
         p2score = assign(p2);
-        int i = 0;
         p1ref.setHandName(this.getHandName(p1score));
         p2ref.setHandName(this.getHandName(p2score));
         if (p1score > p2score)
         {
             return p1ref;
+        } else if(p1score < p2score) {
+            return p2ref;
+        }
+        else {
+             tie();
+        }
+    }
+    public Player tie()
+    {
+
+        while(getHighCard(p1) == getHighCard(p2))
+        {
+            p1[indexOf(p1,getHighCard(p1))] = null;
+            p2[indexOf(p2,getHighCard(p2))] = null;
+        }
+        if(getHighCard(p1) > getHighCard(p2))
+        {
+            return p1ref;
         }
         return p2ref;
+
+    }
+    public int indexOf(Card[] hand, int point)
+    {
+        for (int i = 0; i < 5; i++) {
+            if (hand[i].getPoint() == point)
+                return i;
+        }
     }
     public String getHandName(int score)
     {
-        if(combos[score / 100].equals("High Card"))
+        if(COMBOS[score / 100].equals("High Card"))
         {
-            return Game.checkRoyal(score % 100);
+            return "High Card" + Game.checkRoyal(score % 100);
         }
 
-        return  combos[score / 100]+ " with a high card " + Game.checkRoyal(score % 100);
+        return  COMBOS[score / 100]+ " with a high card " + Game.checkRoyal(score % 100);
     }
     public int assign(Card[] hand)
     {
@@ -96,7 +129,7 @@ public class Checker {
                 return 0;
             }
         }
-        return 500 + getHighCard(hand) ;
+        return FLUSH + getHighCard(hand) ;
     }
     public int getHighCard(Card[] hand)
     {
@@ -122,7 +155,7 @@ public class Checker {
                 return 0;
             }
         }
-        return 600 + getHighCard(hand);
+        return STRAIGHT + getHighCard(hand);
     }
     public int numPair(Card[] hand){
         for (int i = 0; i < 3; i++) {
@@ -164,7 +197,7 @@ public class Checker {
             }
         }
         if (pair1 != 0) {
-            return 100 + Math.max(pair1, pair2) ;
+            return PAIR + Math.max(pair1, pair2) ;
         }
         return 0;
     }
@@ -187,7 +220,7 @@ public class Checker {
             }
         }
         if (pair1 != 0) {
-            return 100 + Math.max(pair1, pair2) ;
+            return PAIR + Math.max(pair1, pair2) ;
         }
         return 0;
     }
@@ -199,7 +232,7 @@ public class Checker {
         if (two / 100 == 1)
             if (three / 100 == 2)
             {
-                return 300 + three % 100;
+                return FULLHOUSE + three % 100;
             }
         return 0;
     }
@@ -211,7 +244,7 @@ public class Checker {
             if (straight / 100 == 6)
             {
                 //not redundant because of truncation
-                return 700 + straight % 100;
+                return STRAIGHTFLUSH + straight % 100;
             }
         return 0;
     }

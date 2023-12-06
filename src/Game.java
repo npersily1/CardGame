@@ -20,7 +20,7 @@ public class Game {
         this.dealer = dealer;
         dealer.setPoints(100);
         this.createDeck();
-       // deck.shuffle();
+        deck.shuffle();
         middle = new Card[3];
 
     }
@@ -28,8 +28,7 @@ public class Game {
     public void play()
     {
         //intro / instructions
-        System.out.println("Welcome to Holdem");
-        clearScreen();
+       printInstructions();
         //game loop
         boolean didFold = false;
 
@@ -39,20 +38,32 @@ public class Game {
             player.setPoints(player.getPoints() - 5);
             this.deal();
             for(int i = 0 ; i < 4; i++) {
+                player.setPoints(player.getPoints() - 5);
+                this.printBoard(++counter);
                 didFold = willFold();
                 if (didFold) {
                     break;
                 }
-                player.setPoints(player.getPoints() - 5);
 
-                this.printHiddenBoard(++counter);
             }
-            if(!didFold && win())
+
+            boolean win = win();
+            printBoard(++counter);
+            if(!didFold && win)
             {
-                player.setPoints(5 * counter);
+                player.setPoints(player.getPoints() + 50);
+                System.out.println("You win");
             }
-            printFinalBoard();
-            clearScreen();
+            else if(win)
+            {
+                System.out.println("You would would have won");
+            }
+            else
+            {
+                System.out.println("You lost");
+            }
+
+
             if(Game.willContinue())
             {
                 break;
@@ -89,21 +100,22 @@ public class Game {
         return false;
 
     }
-    public void printFinalBoard()
-    {
-        System.out.println( player + player.getHandName());
-        this.printMiddle(3);
-        System.out.println(dealer + dealer.getHandName());
-
-
-    }
     //prints current board
-    public void printHiddenBoard(int counter)
+    public void printBoard(int counter)
     {
 
+
+        if(counter == 5)
+        {
+            System.out.println(player + "  " + player.getHandName());
+
+            this.printMiddle(counter);
+            System.out.println("dealer's cards   " + dealer.getHand()[0] + "  " + dealer.getHand()[1] + " " + dealer.getHandName());
+            return;
+        }
         System.out.println(player);
         this.printMiddle(counter);
-        System.out.println("dealer ___ ___" + "Dealer has " + dealer.getPoints() + " points");
+        System.out.println("dealer's cards  ___ ___");
 
 
     }
@@ -111,15 +123,15 @@ public class Game {
     public void printMiddle(int counter)
     {
         System.out.println("Center Cards");
-        if (counter == 0) {
+        if (counter == 1) {
             System.out.println("___    ___    ___");
-        } else if (counter == 1) {
+        } else if (counter == 2) {
             for (int i = 0; i < 1; i++) {
                 System.out.print(middle[i] + "  ");
             }
             System.out.println("    ___     ___");
         }
-        else if (counter == 2) {
+        else if (counter == 3) {
             for (int i = 0; i < 2; i++) {
                 System.out.print(middle[i] + "   ");
             }
@@ -142,6 +154,7 @@ public class Game {
             middle[i] = deck.deal();
         }
         middle[2] = deck.deal();
+
 
     }
 
@@ -173,10 +186,11 @@ public class Game {
             return "Ace";
 
     }
-    // source https://replit.com/talk/ask/How-do-you-clear-terminal-in-Java/46341
+
     public static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        for (int i = 0; i < 100; i++) {
+            System.out.println();
+        }
     }
     public void reset()
     {
@@ -189,6 +203,14 @@ public class Game {
         }
         deck.shuffle();
     }
+    public void printInstructions() {
+        System.out.println("Welcome to Noah's version of Holdem");
+        System.out.println("The main difference is that there is only three cards in the center");
+        System.out.println("Each round if you do not fold then five points will be deducted from your total");
+        System.out.println("I you win you will make double what is put in");
+        System.out.println("Good Luck");
+    }
+
 
     public static void main(String[] args) {
         System.out.println("What is your name");
@@ -196,9 +218,6 @@ public class Game {
         Player dealer = new Player("dealer");
         Game game = new Game(player, dealer);
         game.play();
-
-
-
 
     }
 
