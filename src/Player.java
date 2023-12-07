@@ -13,6 +13,7 @@ public class Player {
         handName = "";
         hand = new Card[2];
     }
+    // constructor specified to make but is not used
 //    public Player(String name, ArrayList<Card> oldHand ) {
 //        this.name = name;
 //        this.points = 0;
@@ -21,7 +22,7 @@ public class Player {
 //        }
 //        handName = "";
 //    }
-
+//getters
     public String getHandName() {
         return handName;
     }
@@ -37,10 +38,10 @@ public class Player {
     public int getPoints() {
         return points;
     }
-
     public String getName() {
         return name;
     }
+    //setter
     public void setPoints(int points) {
         this.points = points;
     }
@@ -48,9 +49,7 @@ public class Player {
     public void addPoints(int increment) {
         this.points += increment;
     }
-    //public void addCard(Card newCard) {
-    //    hand.add(newCard);
-   // }
+
 
 
     public String toString() {

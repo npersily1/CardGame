@@ -14,14 +14,16 @@ public class Deck {
         }
         cardsLeft = deck.size();
     }
+    // returns true if is empty
     public boolean isEmpty()
     {
         return ! (cardsLeft > 0);
     }
+    //getter
     public int getCardsLeft() {
         return cardsLeft;
     }
-
+    // deals
     public Card deal()
     {
         if(deck.isEmpty())
@@ -35,11 +37,7 @@ public class Deck {
         return deck.get(--cardsLeft);
 
     }
-    public void add(Card c)
-    {
-        cardsLeft++;
-        deck.add(c);
-    }
+    //random shuffle
     public void shuffle()
     {
         for (int i = cardsLeft -1; i >= 0 ; i--) {
@@ -50,5 +48,10 @@ public class Deck {
 
         }
 
+    }
+    //reset deck
+    public void reset()
+    {
+        cardsLeft = 52;
     }
 }

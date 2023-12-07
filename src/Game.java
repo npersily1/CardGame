@@ -9,19 +9,19 @@ public class Game {
     private Player player;
     private Player dealer;
     private Card[] middle;
-    private static Scanner s = new Scanner(System.in);
+    private  Scanner s;
 
 
-
+//constructor
     public Game(Player player, Player dealer) {
 
         this.player = player;
-        player.setPoints(100);
+        player.setPoints(110);
         this.dealer = dealer;
-        dealer.setPoints(100);
         this.createDeck();
         deck.shuffle();
         middle = new Card[3];
+        s = new Scanner(System.in);
 
     }
 
@@ -32,13 +32,14 @@ public class Game {
         //game loop
         boolean didFold = false;
 
-        while (player.getPoints() > 0 || dealer.getPoints() > 0) {
+        while (player.getPoints() > 0) {
             //deal player cards
             int counter = 0;
-            player.setPoints(player.getPoints() - 5);
+
             this.deal();
+            //betting loop
             for(int i = 0 ; i < 4; i++) {
-                player.setPoints(player.getPoints() - 5);
+                player.addPoints(- 5);
                 this.printBoard(++counter);
                 didFold = willFold();
                 if (didFold) {
@@ -46,12 +47,15 @@ public class Game {
                 }
 
             }
-
+            //end of game scenarios
             boolean win = win();
             printBoard(++counter);
             if(!didFold && win)
             {
-                player.setPoints(player.getPoints() + 50);
+
+
+
+                player.addPoints(50);
                 System.out.println("You win");
             }
             else if(win)
@@ -63,8 +67,7 @@ public class Game {
                 System.out.println("You lost");
             }
 
-
-            if(Game.willContinue())
+            if(!willContinue())
             {
                 break;
             }
@@ -73,34 +76,56 @@ public class Game {
         }
 
     }
-    public static boolean willContinue()
+    //returns true if the player wants to continue playing
+    public  boolean willContinue()
     {
-        System.out.println("Do you want to continue playing (press 1 to do so)");
+        System.out.println("Do you want to continue playing");
         String willContinue = s.nextLine();
-        if (willContinue.equals("1"))
-        {
-            return true;
+        switch (willContinue) {
+            case("y") :
+            {
+                return true;
+            }
+            case("Y") :
+            {
+                return true;
+            }
+            case("Yes") :
+            {
+                return true;
+            }
         }
         return false;
     }
+    //returns true if the player won
     public boolean win()
     {
         Checker c = new Checker(middle, player ,dealer);
         return c.won() == player;
     }
-    //returns true if they want to fold false otherwise
+    //returns true if they want to fold
     public boolean willFold()
     {
-        System.out.println("Do you fold (press 1 to do so)");
+        System.out.println("Do you fold ");
         String fold = s.nextLine();
-        if (fold.equals("1"))
-        {
-            return true;
+        switch (fold) {
+            case("y") :
+            {
+                return true;
+            }
+            case("Y") :
+            {
+                return true;
+            }
+            case("Yes") :
+            {
+                return true;
+            }
         }
         return false;
 
     }
-    //prints current board
+    //prints board with neccesary elements hidden based off of counter
     public void printBoard(int counter)
     {
 
@@ -110,7 +135,7 @@ public class Game {
             System.out.println(player + "  " + player.getHandName());
 
             this.printMiddle(counter);
-            System.out.println("dealer's cards   " + dealer.getHand()[0] + "  " + dealer.getHand()[1] + " " + dealer.getHandName());
+            System.out.println("dealer's cards  " + dealer.getHand()[0] + "       " + dealer.getHand()[1] + " " + dealer.getHandName());
             return;
         }
         System.out.println(player);
@@ -119,7 +144,7 @@ public class Game {
 
 
     }
-    //prints some of middle five cards
+    //prints correct amount of middle three cards based on counter
     public void printMiddle(int counter)
     {
         System.out.println("Center Cards");
@@ -145,6 +170,7 @@ public class Game {
             System.out.println();
         }
     }
+    //deals use dealer and winner
     public void deal()
     {
         for (int i = 0; i < 2; i++) {
@@ -171,7 +197,7 @@ public class Game {
         }
         deck = new Deck(points, suits, ranks);
     }
-    // checks if a number is greater than 10 and then returns corresponding special card
+    // checks if a number is greater than 10 and then returns corresponding special card name
     public static String checkRoyal(int num)
     {
         if(num < 11)
@@ -186,35 +212,32 @@ public class Game {
             return "Ace";
 
     }
-
-    public static void clearScreen() {
-        for (int i = 0; i < 100; i++) {
-            System.out.println();
-        }
-    }
+    //resets hand middl and cardsleft
     public void reset()
     {
         for (int i = 0; i < 2; i++) {
-            deck.add(player.getHand()[i]);
-            deck.add(dealer.getHand()[i]);
+            player.getHand()[i] = null;
+            dealer.getHand()[i] = null;
+            middle[i] = null;
         }
-        for (int i = 0; i < 3; i++) {
-            deck.add(middle[i]);
-        }
+        middle[2] = null;
+        deck.reset();
         deck.shuffle();
     }
+    //prints intro
     public void printInstructions() {
         System.out.println("Welcome to Noah's version of Holdem");
         System.out.println("The main difference is that there is only three cards in the center");
         System.out.println("Each round if you do not fold then five points will be deducted from your total");
-        System.out.println("I you win you will make double what is put in");
+        System.out.println("If you win you will make double what is put in");
         System.out.println("Good Luck");
     }
 
-
+    //main function
     public static void main(String[] args) {
         System.out.println("What is your name");
-        Player player = new Player(s.nextLine());
+        Scanner input = new Scanner(System.in);
+        Player player = new Player(input.nextLine());
         Player dealer = new Player("dealer");
         Game game = new Game(player, dealer);
         game.play();
